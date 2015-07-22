@@ -1,0 +1,34 @@
+<html>
+<head>
+    <script>
+        var dojoConfig = (function(){
+            var base = location.href.split("/");
+            base.pop();
+            base = base.join("/");
+            return {
+                async: true,
+                isDebug: true,
+                packages:[{
+                    name: 'esriES', location: base + '/js'
+                }]
+            };
+        })();
+    </script>
+    <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
+    <script src="http://js.arcgis.com/3.14/"></script>
+
+    <script type="text/javascript">
+        require([
+            "esriES/staticmap",
+            "dojo/domReady!"
+        ], function(StaticMap) {
+            //debugger;
+            console.log("StaticMap=",StaticMap)
+            //asd = new StaticMap({});
+        });
+    </script>
+</head>
+<body>
+<div id="container"></div>
+</body>
+</html>
