@@ -14,7 +14,8 @@ require([
         zoom: 5,
         latitude: 40.432781,
         longitude: -3.626666,
-        size: [400, 300]
+        size: [400, 300],
+        format: "JPG"
     };
 
     staticMap.getImage(options).then(function(imageURL){
@@ -33,6 +34,7 @@ zoom|int|5|Allowed: from 1 to 15
 latitude|double|40.432781|Allowed: -90 <= x >= 90
 longitude|double|-3.626666|Allowed: 180 <r= x >= 180
 size|array of int|[300,300]|Any
+format|string|PNG32|Allowed: PDF, PNG32, PNG8, JPG, GIF, EPS, SVG, SVG2
 
 ## Setup a different print service
 
