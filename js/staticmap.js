@@ -1,51 +1,40 @@
-pila=0;
 define([
         "dojo/_base/declare",
         "esri/config",
-        "esri/geometry/webMercatorUtils",
-        /*"esri/request"*/
+        "esri/geometry/webMercatorUtils"
     ],
-    function(declare, esriConfig, webMercatorUtils/*, esriRequest*/) {
+    function(declare, esriConfig, webMercatorUtils) {
         return declare(null, {
-            //this.printService: null,
-            //this.webmap: null,
 
             constructor: function(options){
                 // specify class defaults
                 options = options || {};
 
                 this.printService = options.printService || "http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"; // default seat geek range is 30mi
-                 // default to 50 results per page
-
-
-                // returnEvents is called by an external function, esri.request
-                // hitch() is used to provide the proper context so that returnEvents
-                // will have access to the instance of this class
-                this.returnEvents = 3;//lang.hitch(this, this.returnEvents);
 
                 that = this;
             },
 
             getImage: function(options) {
-                options = options || {};
+                var extentValue, xy, z, extents, webmap, format, layoutTemplate, f, params, p1, request;
+                    options = options || {};
+
                 esriConfig.defaults.io.corsEnabledServers.push("sampleserver6.arcgisonline.com");
 
-                var xy = webMercatorUtils.lngLatToXY(options.longitude, options.latitude);
-                //debugger;
+                xy = webMercatorUtils.lngLatToXY(options.longitude, options.latitude);
+
                 extents = [100, 200, 300, 400, 500, 1000,10000,24000,100000,250000,500000,750000,1000000,3000000,10000000];
-                var extentValue = extents[2];
-                z=options.zoom;
+                extentValue = extents[2];
+                z = options.zoom || 5;
                 if(typeof(z)==="number" && (z>0 && z < extents.length)){
-
                     extentValue = extents[z-1];
-
                 }
 
-                var webmap = options.webmap || {
+                webmap = options.webmap || {
                     "mapOptions": {
                         "showAttribution": false,
                         "extent": {
-                            "xmin": xy[0] - extentValue,//-10212866.663781697,
+                            "xmin": xy[0] - extentValue,
                             "ymin": xy[1] - extentValue,
                             "xmax": xy[0] + extentValue,
                             "ymax": xy[1] + extentValue,
@@ -111,49 +100,24 @@ define([
                     default:
                         webmap.operationalLayers[0].url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
                 }
-                console.log();
 
+                format = options.format || "PNG32";
 
-                var format = options.format || "PNG32";
-                /*"PDF",
-                 "PNG32",
-                 "PNG8",
-                 "JPG",
-                 "GIF",
-                 "EPS",
-                 "SVG",
-                 "SVGZ"*/
-                var layoutTemplate = options.layoutTemplate || "MAP_ONLY";
-                var f = options.f || "json"
+                layoutTemplate = options.layoutTemplate || "MAP_ONLY";
+                f = options.f || "json";
 
-
-                /*var request = {
-                    "url": that.printService,
-                    usePost: true,
-                    "content":{
-                    f: f,
-                        format: format,
-                    Layout_Template: layoutTemplate,
-                    Web_Map_as_JSON: JSON.stringify(webmap)
-                    }
-                 //console.log("request=", request);
-                 eventsResponse = esriRequest(request);
-                 return eventsResponse.then(this.returnImage, this.err);
-                }*/
-
-
-                var params = {
+                params = {
                     f: f,
                     format: format,
                     Layout_Template: layoutTemplate,
                     Web_Map_as_JSON: JSON.stringify(webmap)
-                }
+                };
 
                 if(that.msieversion()){
                     return {
                         then: function(callback){
                             // IE USING setTimeout
-                            var request = new XMLHttpRequest();
+                            request = new XMLHttpRequest();
                             that.obj = null;
                             request.onreadystatechange = function()
                             {
@@ -170,8 +134,8 @@ define([
                     };
                 }else{
                     // Chrome, Firefox, Safari, etc using promise
-                    var p1 = new Promise(function(resolve, reject){
-                    var request = new XMLHttpRequest();
+                    p1 = new Promise(function(resolve, reject){
+                    request = new XMLHttpRequest();
                     request.onreadystatechange = function()
                     {
                         if (request.readyState == 4 && request.status == 200)
@@ -220,12 +184,6 @@ define([
                     return parseInt(ua.substring(msie + 5, ua.indexOf(".", msie)));
                 else                 // If another browser, return 0
                     return 0;
-
-                return false;
-            },
-
-            err: function(err) {
-                console.log("Failed to get results from Seat Geek due to an error: ", err);
             }
         });
     }

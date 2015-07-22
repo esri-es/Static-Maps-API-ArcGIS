@@ -20,21 +20,20 @@
     <script type="text/javascript">
         require([
             "esriES/staticmap",
-            "esri/request",
             "dojo/domReady!"
-        ], function(StaticMap, esriRequest) {
-            staticMap = new StaticMap();
+        ], function(StaticMap) {
+            var staticMap = new StaticMap();
 
             var options={
                 basemap: "streets",
                 zoom: 5,
                 latitude: 40.432781,
                 longitude: -3.626666,
-                size: [400, 300]
+                size: [400, 300],
+                format: "PNG32"
             };
 
             staticMap.getImage(options).then(function(imageURL){
-
                 document.getElementById("url").innerHTML = imageURL;
                 document.getElementById("image").src = imageURL;
             });
