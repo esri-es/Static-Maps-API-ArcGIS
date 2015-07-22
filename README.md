@@ -49,3 +49,6 @@ require([
     ...
 });
 ```
+# Browser support
+
+It should work at any browser, it uses Promises for Chrome, Firefox, Safari, etc and setTimeout for IE.
