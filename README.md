@@ -1,6 +1,6 @@
 # Static Maps API - ArcGIS
 
-This class allow you to add static images using a print service. By default ArcGIS Online service is used but you can also add an ArcGIS Server service.
+This class allow you to add static images using a print service. By default ArcGIS Online **free service** is used but you can also add an ArcGIS Server service.
 
 ```javascript
 require([
@@ -33,3 +33,19 @@ zoom|int|5|Allowed: from 1 to 15
 latitude|double|40.432781|Allowed: -90 <= x >= 90
 longitude|double|-3.626666|Allowed: 180 <r= x >= 180
 size|array of int|[300,300]|Any
+
+## Setup a different print service
+
+If you want to use your own ArcGIS Server instance you can do it like this:
+
+```javascript
+require([
+    "esriES/staticmap",
+    "dojo/domReady!"
+], function(StaticMap) {
+    staticMap = new StaticMap({
+        printService: "http://<your-domain>/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
+    });
+    ...
+});
+```
