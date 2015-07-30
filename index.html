@@ -26,10 +26,52 @@
 
             var options={
                 basemap: "streets",
-                zoom: 5,
-                latitude: 40.432781,
-                longitude: -3.626666,
-                size: [400, 300],
+                zoom: 3,
+                //latitude: 40.432781,
+                //longitude: -3.626666,
+                address: "Balcon de Europa, Nerja",
+                markers:[
+                    {
+                        latitude: 36.744426,
+                        longitude: -3.875497,
+                        color: "orange",
+                        yoffset: 10
+                    },
+                    {
+                        latitude: 36.745053,
+                        longitude : -3.877257,
+                        color: "purple"
+            }
+                ],
+                size: [600, 300],
+                format: "PNG32"
+            };
+
+            staticMap.getImage(options).then(function(imageURL){
+                document.getElementById("url").innerHTML = imageURL;
+                document.getElementById("image").src = imageURL;
+            });
+
+            var options={
+                basemap: "streets",
+                zoom: 3,
+                //latitude: 40.432781,
+                //longitude: -3.626666,
+                address: "Balcon de Europa, Nerja",
+                markers:[
+                    {
+                        latitude: 36.744426,
+                        longitude: -3.875497,
+                        color: "orange",
+                        yoffset: 10
+                    },
+                    {
+                        latitude: 36.745053,
+                        longitude : -3.877257,
+                        color: "purple"
+                    }
+                ],
+                size: [600, 300],
                 format: "PNG32"
             };
 
