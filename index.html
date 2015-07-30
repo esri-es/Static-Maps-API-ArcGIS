@@ -355,14 +355,12 @@
 
    &lt;script type="text/javascript"&gt;
     var dojoConfig = (function(){
-        var base = location.href.split("/");
-        base.pop();
-        base = base.join("/");
+        var base = "http://esri-es.github.io/Static-Maps-API-ArcGIS"
         return {
             async: true,
             isDebug: true,
             packages:[{
-                name: 'esriES', location: base + '/js'
+                name: 'esriES', location: base + '/js', main: "staticmap"
             }]
         };
     })();
