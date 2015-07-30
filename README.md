@@ -36,6 +36,26 @@ longitude|double|-3.626666|Allowed: 180 <r= x >= 180
 size|array of int|[300,300]|Any
 format|string|PNG32|Allowed: PDF, PNG32, PNG8, JPG, GIF, EPS, SVG, SVG2
 
+## Configure dojoConfig
+
+You need to configure dojoConfig like this:
+```javascript
+var dojoConfig = (function(){
+    var base = location.href.split("/");
+    base.pop();
+    base = base.join("/");
+    return {
+        async: true,
+        isDebug: true,
+        packages:[{
+            name: 'esriES', location: base + '/js'
+        }]
+    };
+})();
+```
+
+In order to make it work. You can check the [demo](http://esri-es.github.io/Static-Maps-API-ArcGIS/) and [code here](https://github.com/esri-es/Static-Maps-API-ArcGIS/blob/master/index.html).
+
 ## Setup a different print service
 
 If you want to use your own ArcGIS Server instance you can do it like this:
