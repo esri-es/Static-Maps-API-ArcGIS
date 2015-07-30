@@ -20,19 +20,17 @@ define([
 
             getXY: function(options){
 
-                var xy, location, p1,
+                var xy, location, deferred,
                     geocoderService = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates";
 
                 if(options.longitude && options.latitude) {
+                    deferred = new Deferred();
                     xy = webMercatorUtils.lngLatToXY(options.longitude, options.latitude);
-                    return {
-                        then: function(callback){
-                            callback(xy);
-                        }
-                    };
+                    deferred.resolve(xy);
+                    return deferred.promise;
 
                 }else if(options.address){
-                    var deferred = new Deferred();
+                    deferred = new Deferred();
                     esriRequest({
                         "url": geocoderService,
                         "content": {
@@ -58,14 +56,41 @@ define([
                 }
             },
 
+            validate: function(options){
+                console.log("options1=",options)
+                if(!options.basemap){
+                    console.log("Error: you must set a basemap");
+                    return false;
+                }else if(!options.zoom){
+                    console.log("Error: you must set a zoom");
+                    return false;
+                }else if(!options.size) {
+                    console.log("Error: you must set a siz");
+                    return false;
+                }else if(!options.format) {
+                    console.log("Error: you must set a format");
+                    return false;
+                }else if(!((options.latitude && options.longitude) || options.address)) {
+                    console.log("Error: you must set an address or lat&long");
+                    return false;
+                }
+                return true;
+            },
+
             getImage: function(options) {
-                var extentValue, xy, z, extents, webmap, format, layoutTemplate, f, params, p1, request;
+                var extentValue, xy, z, extents, webmap, format, layoutTemplate, f, params, request;
                 var deferred = new Deferred();
+
+                if(!this.validate(options)){
+                    console.log("falló")
+                    return {then:function(){}};
+                }
+
 
                 options = options || {};
 
                 esriConfig.defaults.io.corsEnabledServers.push("sampleserver6.arcgisonline.com");
-
+                console.log("options=",options);
                 this.getXY(options).then(function(response){
                     var deferred;
                     xy = response;
@@ -73,6 +98,7 @@ define([
                     extents = [100, 200, 300, 400, 500, 1000,10000,24000,100000,250000,500000,750000,1000000,3000000,10000000];
                     extentValue = extents[2];
                     z = options.zoom || 5;
+                    console.log("z=",z)
 
                     if(typeof(z)==="number" && (z>0 && z < extents.length)){
                         extentValue = extents[z-1];

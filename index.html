@@ -10,54 +10,78 @@
                 isDebug: true,
                 packages:[{
                     name: 'esriES', location: base + '/js'
+                },{
+                    name: 'jquery',
+                    location: 'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1',
+                    main: 'jquery'
+                },{
+                    name: 'jsrender',
+                    location: base + '/utils',
+                    main: 'jsrender.min'
                 }]
+
             };
         })();
     </script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
     <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="http://esri.github.io/bootstrap-map-js/src/css/bootstrapmap.css">
+
     <script src="http://js.arcgis.com/3.14/"></script>
+    <style type="text/css">
+        .mb-15{
+            margin-bottom: 15px !important;
+        }
+        .mb-25{
+            margin-bottom: 25px !important;
+        }
+        .radio .mb-15 input[type="text"]{
+            margin-top: 10px;
+        }.radio .mb-15 span{
+             font-weight: bold;
+         }
+        .box{
+            position: relative;
+            padding: 15px 15px 15px;
+            margin: 0 -15px 15px;
+            border-style: solid;
+            margin-right: 0;
+            margin-left: 0;
+            background-color: #fff;
+            border-color: #ddd;
+            border-width: 1px;
+            border-radius: 4px 4px 0 0;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+        #markers{
+            list-style: none;
+            margin:0;
+            padding:0;
+        }
+        #result .box{position:relative;}
+        #loading{position: absolute;width:100%;top:0;bottom:0;background-color:rgba(255,255,255,0.5);
+            padding-top: 115px;
+            font-size: 3em;}
+    </style>
 
     <script type="text/javascript">
+        var render;
         require([
             "esriES/staticmap",
+            'jquery',
+            'jsrender',
             "dojo/domReady!"
-        ], function(StaticMap) {
+        ], function(StaticMap, $, jsrender) {
             var staticMap = new StaticMap();
-
-            var options={
+            render = jsrender;
+            var options = {
                 basemap: "streets",
                 zoom: 3,
-                //latitude: 40.432781,
-                //longitude: -3.626666,
                 address: "Balcon de Europa, Nerja",
-                markers:[
-                    {
-                        latitude: 36.744426,
-                        longitude: -3.875497,
-                        color: "orange",
-                        yoffset: 10
-                    },
-                    {
-                        latitude: 36.745053,
-                        longitude : -3.877257,
-                        color: "purple"
-            }
-                ],
-                size: [600, 300],
-                format: "PNG32"
-            };
-
-            staticMap.getImage(options).then(function(imageURL){
-                document.getElementById("url").innerHTML = imageURL;
-                document.getElementById("image").src = imageURL;
-            });
-
-            var options={
-                basemap: "streets",
-                zoom: 3,
-                //latitude: 40.432781,
-                //longitude: -3.626666,
-                address: "Balcon de Europa, Nerja",
+                //latitude: 40.744426,
+                //longitude: -3.875497,
                 markers:[
                     {
                         latitude: 36.744426,
@@ -71,20 +95,360 @@
                         color: "purple"
                     }
                 ],
-                size: [600, 300],
+                size: [510, 250],
                 format: "PNG32"
             };
 
-            staticMap.getImage(options).then(function(imageURL){
-                document.getElementById("url").innerHTML = imageURL;
-                document.getElementById("image").src = imageURL;
+            staticMap.getImage(options).then(function (imageURL) {
+                document.getElementById("img").src=imageURL;
+            });
+            $("#locationType").change(function(){
+                $(".locationType").hide();
+                $("#" + $("#locationType").val()).show();
+            });
+            //debugger
+/*
+            $.getScript("utils/jsrender.min.js", function(){
+
+                alert("Script loaded but not necessarily executed.");
+
+            });*/
+
+            $("form").submit(function(e){
+                $("#loading").show();
+                e.preventDefault();
+
+
+                var options = {
+                    basemap: $("[name='basemap']").val(),
+                    zoom: parseInt($("[name='zoom']").val()),
+                    markers: [],
+                    /*markers:[
+                        {
+                            latitude: 36.744426,
+                            longitude: -3.875497,
+                            color: "orange",
+                            yoffset: 10
+                        },
+                        {
+                            latitude: 36.745053,
+                            longitude : -3.877257,
+                            color: "purple"
+                        }
+                    ],*/
+                    size: [ $("[name='width']").val(),  $("[name='height']").val()],
+                    format: $("[name='format']").val()
+                };
+
+                $("#markers li").each(function(i, elem){
+                    options.markers.push({
+                        latitude: $($("#markers li")[0]).find(".lat").val(),
+                        longitude: $($("#markers li")[0]).find(".lon").val(),
+                        color: $($("#markers li")[0]).find(".color").val()
+                    });
+                });
+
+                if($("[name='locationType']").val()=="typeAddress"){
+                    options.address = $("[name='address']").val();
+                }else{
+                    options.latitude = $("[name='latitude']").val();
+                    options.longitude = $("[name='longitude']").val()
+                }
+                console.log(options)
+
+                staticMap.getImage(options).then(function (imageURL) {
+                    document.getElementById("img").src = imageURL;
+                    document.getElementById("imgURL").href = imageURL;
+                    $("#loading").hide();
+                });
+                return -1;
             });
 
+            $("#addMarker").click(function(e){
+                e.preventDefault();
+                //$("#markers").append("<li>Latitud</li>");
+                var template = jsrender.templates("#markerTmpl");
+
+                var htmlOutput = template.render({
+                    markerId: $("#markers li").length
+                });
+
+                $("#markers").append(htmlOutput);
+            });
+
+
         });
+
+        var removeMarker = function(id){
+            $(id).parent().parent().remove()
+        };
     </script>
 </head>
 <body>
-    <div>Image URL: <span id="url"></span></div>
-    <img src="" id="image">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center mb-25">
+                <h1>Static Maps API - ArcGIS (Demo)</h1>
+            </div>
+            <div class="col-md-6">
+
+                <form class="form-horizontal box">
+
+                    <div class="form-group">
+                        <label for="basemap" class="col-sm-3 control-label">Basemap:</label>
+                        <div class="col-sm-4">
+                            <select name="basemap" class=" form-control" id="basemap">
+                                <option value="streets">Streets</option>
+                                <option value="satellite" selected>Satellite</option>
+                                <option value="topo">Topographic</option>
+                                <option value="light-gray">Light gray</option>
+                                <option value="dark-gray">Dark gray</option>
+                                <option value="hybrid">Hybrid</option>
+                                <option value="oceans">Oceans</option>
+                                <option value="national-geographic">National geographic</option>
+                                <option value="osm">Open StreetMaps</option>
+                            </select>
+                        </div>
+
+                        <label for="zoom" class="col-sm-2 control-label">Zoom:</label>
+                        <div class="col-sm-3">
+                            <input type="number" name="zoom" id="zoom" min="1" max="15" value="3" class=" form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="locationType" class="col-sm-3 control-label">Location type:</label>
+                        <div class="col-sm-9">
+                            <select name="locationType" class="form-control" id="locationType">
+                                <option value="typeAddress">Address</option>
+                                <option value="typeLatlong" selected="selected">Latitude & Longitud</option>
+                            </select>
+                        </div>
+                   </div>
+
+                    <div class="form-group locationType" id="typeAddress" style="display:none">
+                       <label class="col-sm-3 control-label">Dirección:</label>
+                       <div class="col-sm-9">
+                          <input class="form-control" type="text" name="address" value="Emilio Muñoz 35, Madrid">
+                       </div>
+                   </div>
+
+                    <div class="form-group locationType" id="typeLatlong" >
+                        <label for="latitude" class="col-sm-3 control-label">Latitude:</label>
+                        <div class="col-sm-4">
+                            <input type="text" name="latitude" value="40.432781" id="latitude" class="form-control"/>
+                        </div>
+                        <label for="longitude" class="col-sm-2 control-label">Longitude:</label>
+                        <div class="col-sm-3">
+                            <input type="text" name="longitude" value="-3.626666" id="longitude" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="width" class="col-sm-3 control-label">Width:</label>
+                        <div class="col-sm-4">
+                            <input type="text" name="width" value="510" id="width" class="form-control"/>
+                        </div>
+                        <label for="height" class="col-sm-2 control-label">Height:</label>
+                        <div class="col-sm-3">
+                            <input type="text" name="height" value="250" id="height" class="form-control">
+                        </div>
+
+                        <!--
+
+
+
+                            <label class="col-sm-12 mb-15">
+                                <div class="col-sm-1">
+                                    <input type="radio" name="locationType" value="latlong" class="col-sm-1" checked>
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <span class="col-sm-2">Latitude:</span>
+                                    <input class="form-control" type="text" name="latitude" value="">
+                                </div>
+                                <div class="col-sm-5">
+
+                                    <span class="col-sm-2">Longitude:</span>
+                                    <input class="form-control" type="text" name="address" value=""><br>
+                                </div>
+                            </label>
+                            </div>
+-->
+                    </div>
+                    <div class="form-group">
+
+                        <label for="format" class="col-sm-3 control-label">Format:</label>
+                        <div class="col-sm-9">
+                            <select name="format" class="form-control" id="format">
+                                <option value="PNG32">PNG32</option>
+                                <option value="PNG8">PNG8</option>
+                                <option value="JPG">JPG</option>
+                                <option value="GIF">GIF</option>
+                                <option value="EPS">EPS</option>
+                                <option value="SVG">SVG</option>
+                                <option value="SVG2">SVG2</option>
+                                <option value="PDF">PDF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9 mb-15">
+                            <button id="addMarker" class="btn btn-info btn-block">Add new marker</button>
+                        </div>
+                        <ul id="markers">
+                            <li class="clearfix mb-15">
+                                <div class="col-sm-1">
+                                    <button class=" btn btn-danger" onclick="removeMarker(this)">X</button>
+                                </div>
+                                <label class="col-sm-2 control-label">Lat:</label>
+                                <div class="col-sm-2">
+                                    <input type="text" value="40.432781" class="lat form-control">
+                                </div>
+                                <label class="col-sm-1 control-label">Lon:</label>
+                                <div class="col-sm-2">
+                                    <input type="text" value="-3.626666" class="lon form-control">
+                                </div>
+                                <label class="col-sm-1 control-label">Color:</label>
+                                <div class="col-sm-3">
+                                    <select class="color form-control">
+                                        <option value="orange">Orange</option>
+                                        <option value="purple">Purple</option>
+                                    </select>
+                                </div>
+
+                            </li>
+
+                        </ul>
+                    </div>
+                    <p><input type="submit" value="Update static image & source code" class="btn btn-primary btn-block btn-lg"></p>
+                <!--
+                    markers:[
+                    {
+                    latitude: 36.744426,
+                    longitude: -3.875497,
+                    color: "orange",u
+                    yoffset: 10
+                    },
+                    {
+                    latitude: 36.745053,
+                    longitude : -3.877257,
+                    color: "purple"
+                    }
+                    ],
+                    size: [250, 250],
+                    -->
+                </form>
+            </div>
+            <div id="result" class="col-md-6">
+                <div class="box text-center">
+                    <div id="loading" style="display:none">Loading...</div>
+                    <a href="#" id="imgURL">
+                        <img id="img">
+                    </a>
+                </div>
+                <p>Source code:</p>
+<pre class="prettyprint lang-html">
+&lt;html&gt;
+&lt;head&gt;
+
+
+   &lt;script type="text/javascript"&gt;
+    var dojoConfig = (function(){
+        var base = location.href.split("/");
+        base.pop();
+        base = base.join("/");
+        return {
+            async: true,
+            isDebug: true,
+            packages:[{
+                name: 'esriES', location: base + '/js'
+            }]
+        };
+    })();
+    &lt;/script&gt;
+
+    &lt;link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css"&gt;
+    &lt;script src="http://js.arcgis.com/3.14/"&gt;&lt;/script&gt;
+
+    &lt;script type="text/javascript"&gt;
+    require([
+        "esriES/staticmap",
+        "dojo/domReady!"
+    ], function(StaticMap) {
+        staticMap = new StaticMap();
+
+        var options = {
+            basemap: "streets",
+            zoom: 3,
+            address: "Balcon de Europa, Nerja",
+            markers:[
+                {
+                    latitude: 36.744426,
+                    longitude: -3.875497,
+                    color: "orange",
+                    yoffset: 10
+                },
+                {
+                    latitude: 36.745053,
+                    longitude : -3.877257,
+                    color: "purple"
+                }
+            ],
+            size: [510, 250],
+            format: "PNG32"
+        };
+
+        staticMap.getImage(options).then(function(imageURL){
+            document.getElementById("staticImage").src = imageURL;
+        });
+
+    });
+
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;img src="" id="staticImage"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+<!--<div>
+   <em>Name:</em>
+   {{if showNickname && nickname}}
+      (Goes by <em>{{:nickname}}</em>)
+   {{/if}}
+</div>
+-->
+<script id="markerTmpl" type="text/x-jsrender">
+
+<li class="clearfix mb-15">
+    <div class="col-sm-1">
+        <button class=" btn btn-danger" onclick="removeMarker(this)">X</button>
+    </div>
+    <label class="col-sm-2 control-label">Lat:</label>
+    <div class="col-sm-2">
+        <input type="text" value="" class="lat form-control"/>
+    </div>
+    <label class="col-sm-1 control-label">Lon:</label>
+    <div class="col-sm-2">
+        <input type="text" value="" class="lon form-control">
+    </div>
+    <label class="col-sm-1 control-label">Color:</label>
+    <div class="col-sm-3">
+        <select class="color form-control">
+            <option value="orange">Orange</option>
+            <option value="purple">Purple</option>
+        </select>
+    </div>
+
+</li>
+</script>
+
 </body>
 </html>
