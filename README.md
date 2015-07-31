@@ -12,9 +12,21 @@ require([
     var options={
         basemap: "streets",
         zoom: 5,
-        latitude: 40.432781,
-        longitude: -3.626666,
+        address: "Balcon de Europa, Nerja",
         size: [400, 300],
+        markers:[
+            {
+                latitude: 36.744426,
+                longitude: -3.875497,
+                color: "orange",
+                yoffset: 10
+            },
+            {
+                latitude: 36.745053,
+                longitude : -3.877257,
+                color: "purple"
+            }
+        ],
         format: "JPG"
     };
 
@@ -33,8 +45,20 @@ basemap|string|topo|Allowed: satellite, topo, light-gray, dark-gray, streets, hy
 zoom|int|5|Allowed: from 1 to 15
 latitude|double|40.432781|Allowed: -90 <= x >= 90
 longitude|double|-3.626666|Allowed: 180 <r= x >= 180
+address|string|None|This uses the single address API (no credits consuming)
+markers|array of markers objects|None|Bellow you will find another table with the description
 size|array of int|[300,300]|Any
 format|string|PNG32|Allowed: PDF, PNG32, PNG8, JPG, GIF, EPS, SVG, SVG2
+
+Markers properties:
+
+Param| Type | Default value | Summary
+--- | --- | --- | ---
+latitude|double|None|Allowed: -90 <= x >= 90
+longitude|double|None|Allowed: 180 <r= x >= 180
+color|string|None|Available at this time: orange|purple
+xoffset|int|0|X Offset of the marker
+yoffset|int|0|Y Offset of the marker
 
 ## Configure dojoConfig
 
@@ -73,4 +97,4 @@ require([
 ```
 # Browser support
 
-It should work at any browser, it uses Promises for Chrome, Firefox, Safari, etc and setTimeout for IE.
+It should work at any browser.
