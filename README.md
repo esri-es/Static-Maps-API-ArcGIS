@@ -43,12 +43,14 @@ Param| Type | Default value | Summary
 --- | --- | --- | ---
 basemap|string|topo|Allowed: satellite, topo, light-gray, dark-gray, streets, hybrid, oceans, national-geographic, osm
 zoom|int|5|Allowed: from 1 to 15
-latitude|double|40.432781|Allowed: -90 <= x >= 90
-longitude|double|-3.626666|Allowed: 180 <r= x >= 180
-address|string|None|This uses the single address API (no credits consuming)
+latitude|double|40.432781|Allowed: -90 <= x >= 90 (map center)
+longitude|double|-3.626666|Allowed: 180 <r= x >= 180 (map center)
+address|string|None|This uses the single address API (no credits consuming) (map center)
 markers|array of markers objects|None|Bellow you will find another table with the description
 size|array of int|[300,300]|Any
 format|string|PNG32|Allowed: PDF, PNG32, PNG8, JPG, GIF, EPS, SVG, SVG2
+
+To center the map you must use: *address* **OR** *latitude and longitude*.
 
 Markers properties:
 
