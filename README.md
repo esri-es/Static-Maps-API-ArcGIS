@@ -50,7 +50,7 @@ markers|array of markers objects|None|Bellow you will find another table with th
 size|array of int|[300,300]|Any
 format|string|PNG32|Allowed: PDF, PNG32, PNG8, JPG, GIF, EPS, SVG, SVG2
 
-To center the map you must use: *address* **OR** *latitude and longitude*.
+To center the map you must use: *address* **OR** *latitude and longitude*, never both.
 
 Markers properties:
 
