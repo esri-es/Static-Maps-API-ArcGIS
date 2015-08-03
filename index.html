@@ -166,7 +166,7 @@
 &lt;head&gt;
    &lt;script type="text/javascript"&gt;
     var dojoConfig = (function(){
-        var base = "http://esri-es.github.io/Static-Maps-API-ArcGIS"
+        var base = "http://esri-es.github.io/Static-Maps-API-ArcGIS";
         return {
             async: true,
             isDebug: true,
@@ -185,7 +185,7 @@
         "esriES/staticmap",
         "dojo/domReady!"
     ], function(StaticMap) {
-        staticMap = new StaticMap();
+        var staticMap = new StaticMap();
 
         var options = {
             basemap: "streets",
@@ -255,7 +255,7 @@
 &lt;head&gt;
    &lt;script type="text/javascript"&gt;
     var dojoConfig = (function(){
-        var base = "http://esri-es.github.io/Static-Maps-API-ArcGIS"
+        var base = "http://esri-es.github.io/Static-Maps-API-ArcGIS";
         return {
             async: true,
             isDebug: true,
@@ -274,7 +274,7 @@
         "esriES/staticmap",
         "dojo/domReady!"
     ], function(StaticMap) {
-        staticMap = new StaticMap();
+        var staticMap = new StaticMap();
 
 var options = {{:options}};
 
