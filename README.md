@@ -100,3 +100,6 @@ require([
 # Browser support
 
 It should work at any browser.
+
+# Related project
+You can find a script written in Node.js inside the repo [Static-Map-Service-ArcGIS](https://github.com/esri-es/Static-Map-Service-ArcGIS) that you can use to load static maps if you are not planning to use the [ArcGIS Javascript API](js.arcgis.com).
