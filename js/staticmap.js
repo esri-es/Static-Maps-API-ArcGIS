@@ -12,7 +12,7 @@ define([
             constructor: function(options){
                 options = options || {};
 
-                this.printService = options.printService || "http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"; // default seat geek range is 30mi
+                this.printService = options.printService || "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"; // default seat geek range is 30mi
 
                 esriConfig.defaults.io.corsEnabledServers.push("sampleserver6.arcgisonline.com");
 
