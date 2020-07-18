@@ -14,7 +14,7 @@ define([
 
                 this.printService = options.printService || "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"; // default seat geek range is 30mi
 
-                esriConfig.defaults.io.corsEnabledServers.push("sampleserver6.arcgisonline.com");
+                esriConfig.defaults.io.corsEnabledServers.push("https://utility.arcgisonline.com");
 
                 that = this;
             },
